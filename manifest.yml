@@ -1,0 +1,6 @@
+---
+applications:
+- name: monjavpro
+  instances: 1
+  host: heptio-monjavpro-${random-word}
+  path: target/monjavpro-0.0.1.BUILD-SNAPSHOT.jar
