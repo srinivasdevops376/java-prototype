@@ -3,8 +3,8 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>monjavpro</groupId>
-	<artifactId>monjavpro</artifactId>
+	<groupId>java-prototype</groupId>
+	<artifactId>java-prototype</artifactId>
 	<version>0.0.1.BUILD-SNAPSHOT</version>
 
 	<name>monjavpro</name>
@@ -73,7 +73,7 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<start-class>heptio.Application</start-class>
+		<start-class>heptio.javaPrototype.Application</start-class>
 		<java.version>1.8</java.version>
 
 		<spring-cloud.version>1.2.3.RELEASE</spring-cloud.version>

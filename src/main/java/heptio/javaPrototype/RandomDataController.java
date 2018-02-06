@@ -1,4 +1,4 @@
-package heptio;
+package heptio.javaPrototype;
 
 import org.springframework.boot.*;
 import org.springframework.boot.autoconfigure.*;
@@ -7,15 +7,15 @@ import org.springframework.web.bind.annotation.*;
 
 @Controller
 @EnableAutoConfiguration
-public class ReadyController {
+public class RandomDataController {
 
     @RequestMapping("/")
     @ResponseBody
     String home() {
-        return "The server is running, and the application is ready to use!";
+        return "This request has been stored, along with a random string";
     }
 
     public static void main(String[] args) throws Exception {
-        SpringApplication.run(ReadyController.class, args);
+        SpringApplication.run(RandomDataController.class, args);
     }
 }
