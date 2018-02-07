@@ -16,7 +16,8 @@ public class RandomDataController {
     String home() {
         EasyReaderWriter db;
         db = EasyReaderWriter.getInstance();
-        db.write(RandomStringGenerator.generateString(254));
+        db.synchronousWrite(RandomStringGenerator.generateString(254));
+        db.asynchronousWrite(RandomStringGenerator.generateString(254));
         return "Success!";
     }
 

@@ -4,6 +4,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.*;
+import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 
 public class EasyReaderWriter {
@@ -47,14 +49,14 @@ public class EasyReaderWriter {
     }
 
 
-    public void write(String data) {
+    public void synchronousWrite(String data) {
         logger.info("Writing data");
         logger.info(data);
         Statement statement;
         try {
             statement = this.connection.createStatement();
         } catch (SQLException e) {
-            logger.error("Unable to create statement object for MySQL: "+e.getMessage());
+            logger.error("Unable to create statement object for MySQL: " + e.getMessage());
             return;
         }
         java.util.Date dt = new java.util.Date();
@@ -67,5 +69,27 @@ public class EasyReaderWriter {
             logger.error("Unable to query data: " + e.getMessage());
             return;
         }
+    }
+
+    public void asynchronousWrite(String data) {
+
+        Runnable task = () -> {
+            try {
+                TimeUnit.SECONDS.sleep((long) Math.random() * 100);
+            } catch (InterruptedException e) {
+                logger.error("Unable to sleep thread: " + e.getMessage());
+            }
+            this.synchronousWrite(data);
+        };
+        long leftLimit = 1L;
+        long rightLimit = 10L;
+        long generatedLong = leftLimit + (long) (Math.random() * (rightLimit - leftLimit));
+        try {
+            TimeUnit.SECONDS.sleep(generatedLong);
+        } catch (InterruptedException e) {
+            logger.error("Unable to sleep thread: " + e.getMessage());
+        }
+        Thread thread = new Thread(task);
+        thread.start();
     }
 }
