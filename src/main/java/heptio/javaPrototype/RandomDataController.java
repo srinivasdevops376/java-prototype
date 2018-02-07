@@ -1,5 +1,7 @@
 package heptio.javaPrototype;
 
+import heptio.database.EasyReaderWriter;
+import heptio.stringUtilities.RandomStringGenerator;
 import org.springframework.boot.*;
 import org.springframework.boot.autoconfigure.*;
 import org.springframework.stereotype.*;
@@ -12,7 +14,10 @@ public class RandomDataController {
     @RequestMapping("/")
     @ResponseBody
     String home() {
-        return "This request has been stored, along with a random string";
+        EasyReaderWriter db;
+        db = EasyReaderWriter.getInstance();
+        db.write(RandomStringGenerator.generateString(254));
+        return "Success!";
     }
 
     public static void main(String[] args) throws Exception {
