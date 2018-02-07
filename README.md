@@ -10,7 +10,7 @@ Author: Kris Nova [Github][6]
 `java-prototype` simulates a troublesome monolithic Java application that is designed to be hard to orchestrate in containers.
 
 # Install
-5
+
 Installing with [maven][5]
 
 ```bash
@@ -21,6 +21,18 @@ Also for a quick development run the following command to build and run the appl
 
 ```bash
 make dev
+```
+
+# Configuring
+
+### MySQL
+
+There are three environmental variables that need to be defined in order to authenticate with a MySQL server.
+
+```bash
+export JAVAPROTOTYPE_MYSQL_CONNECTION_STRING="jdbc:mysql://my.server.url/database"
+export JAVAPROTOTYPE_MYSQL_CONNECTION_USER="user"
+export JAVAPROTOTYPE_MYSQL_CONNECTION_PASS="password"
 ```
 
 # Troubleshooting
