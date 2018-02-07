@@ -1,7 +1,7 @@
 package heptio.javaPrototype;
 
 import heptio.database.EasyReaderWriter;
-import heptio.stringUtilities.RandomStringGenerator;
+import heptio.util.RandomStringGenerator;
 import org.springframework.boot.*;
 import org.springframework.boot.autoconfigure.*;
 import org.springframework.stereotype.*;

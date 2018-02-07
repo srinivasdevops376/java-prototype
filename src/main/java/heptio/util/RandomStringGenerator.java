@@ -1,4 +1,4 @@
-package heptio.stringUtilities;
+package heptio.util;
 
 public class RandomStringGenerator {
 
