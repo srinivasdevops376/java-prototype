@@ -14,7 +14,7 @@ Author: Kris Nova [Github][6]
 Installing with [maven][5]
 
 ```bash
-mvn clean package 
+mvn clean package
 ```
 
 Also for a quick development run the following command to build and run the application.
@@ -34,6 +34,15 @@ export JAVAPROTOTYPE_MYSQL_CONNECTION_STRING="jdbc:mysql://my.server.url/databas
 export JAVAPROTOTYPE_MYSQL_CONNECTION_USER="user"
 export JAVAPROTOTYPE_MYSQL_CONNECTION_PASS="password"
 ```
+
+# Containerization
+AWS: Include `buildspec.yml` in a CodeBuild object linking your clone or fork of this repo.  Replace the four variables with the correct data for your project:
+1. $AWS_DEFAULT_REGION
+1. $IMAGE_REPO_NAME
+1. $IMAGE_TAG
+1. $AWS_ACCOUNT_ID
+
+An image must exist in $IMAGE_REPO_NAME (it can be scratch or any placeholder.  A successful build will overwrite the image).  Follow directions [here](https://docs.aws.amazon.com/codebuild/latest/userguide/getting-started.html) if this is your first time using AWS CodeBuild.
 
 # Troubleshooting
 
