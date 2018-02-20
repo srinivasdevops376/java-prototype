@@ -1,27 +1,17 @@
-FROM alpine/git as clone
-ARG url
-WORKDIR /app
-RUN git clone ${url}
-
 FROM maven:3.2-jdk-8 as build
-ARG project
 WORKDIR /app
-COPY --from=clone /app/${project} /app
+COPY . /app
 RUN mvn clean package
 
 FROM openjdk:jdk-alpine
 WORKDIR /app
 COPY --from=build /app/target/*.jar /app
 
-
-
-# app and environment variables
-ARG MYSQL_ROOT_PASSWORD
-ARG MYSQL_USER
-ARG JAVAPROTOTYPE_MYSQL_CONNECTION_STRING
-
+# environment variable
 ENV LOG_DIR $WORKDIR/logs
-
+ENV JAVAPROTOTYPE_MYSQL_CONNECTION_STRING $JAVAPROTOTYPE_MYSQL_CONNECTION_STRING
+ENV JAVAPROTOTYPE_MYSQL_CONNECTION_USER $JAVAPROTOTYPE_MYSQL_CONNECTION_USER
+ENV JAVAPROTOTYPE_MYSQL_CONNECTION_PASS $JAVAPROTOTYPE_MYSQL_CONNECTION_PASS
 # app setup
 RUN mkdir -p $WORKDIR/conf
 # Placeholder for logging and monitoring agent
