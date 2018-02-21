@@ -36,6 +36,7 @@ export JAVAPROTOTYPE_MYSQL_CONNECTION_PASS="password"
 ```
 
 # Containerization
+
 AWS: Include `buildspec.yml` in a CodeBuild object linking your clone or fork of this repo.  Replace the four variables with the correct data for your project:
 1. $AWS_DEFAULT_REGION
 1. $IMAGE_REPO_NAME
