@@ -1,0 +1,15 @@
+server.port: ${port:8080}
+debug: true
+
+spring:
+  datasource:
+    url: ${JAVAPROTOTYPE_MYSQL_CONNECTION_STRING:jdbc:mysql://localhost:3306/java_prototype}
+    driver-class-name: com.mysql.jdbc.Driver
+    username: ${JAVAPROTOTYPE_MYSQL_CONNECTION_USER:java_prototype}
+    password: ${JAVAPROTOTYPE_MYSQL_CONNECTION_PASS:java_prototype}
+
+flyway:
+  url: jdbc:mysql://localhost:3306
+  schemas: java_prototype
+  placeholders:
+    application_username: ${spring.datasource.username}
