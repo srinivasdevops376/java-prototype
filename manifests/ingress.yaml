@@ -13,3 +13,4 @@ spec:
             backend:
               serviceName: java-prototype
               servicePort: 8080
+---
