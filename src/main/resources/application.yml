@@ -8,6 +8,8 @@ spring:
     username: ${JAVAPROTOTYPE_MYSQL_CONNECTION_USER:java_prototype}
     password: ${JAVAPROTOTYPE_MYSQL_CONNECTION_PASS:java_prototype}
 
+management.security.enabled: false
+
 flyway:
   url: jdbc:mysql://localhost:3306
   schemas: java_prototype
