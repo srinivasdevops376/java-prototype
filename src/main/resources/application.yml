@@ -8,7 +8,11 @@ spring:
     username: ${JAVAPROTOTYPE_MYSQL_CONNECTION_USER:java_prototype}
     password: ${JAVAPROTOTYPE_MYSQL_CONNECTION_PASS:java_prototype}
 
-management.security.enabled: false
+  jackson.serialization.WRITE_DATES_AS_TIMESTAMPS: false
+
+management:
+  security.enabled: false # allows unauthenticated access to the spring-boot-actuator endpoints
+  info.git.mode: full # (simple | full) -- controls how much of the git.properties information is returned in the /info endpoint
 
 flyway:
   url: jdbc:mysql://localhost:3306
