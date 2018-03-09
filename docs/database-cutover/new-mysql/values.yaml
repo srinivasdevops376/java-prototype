@@ -1,0 +1,14 @@
+mysqlRootPassword: not-a-secure-password
+persistence.enabled: true
+
+configurationFiles:
+  mysql.cnf: |
+    [mysqld]
+    server-id=2
+    binlog-format=mixed
+    log-bin=mysql-bin
+    datadir=/var/lib/mysql
+    innodb_flush_log_at_trx_commit=1
+    sync_binlog=1
+    relay-log=mysql-relay-bin
+    log-slave-updates=1
