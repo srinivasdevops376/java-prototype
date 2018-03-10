@@ -1,5 +1,5 @@
 
-GRANT delete, insert, select, update ON java_prototype.* TO ${application_username};
+GRANT delete, insert, select, update ON java_prototype.* TO `${application_username}`;
 
 -- Create syntax for 'java_prototype.getrequests'
 CREATE TABLE getrequests (
