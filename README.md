@@ -77,6 +77,18 @@ kubectl get secret --namespace $NAMESPACE java-prototype-mysql-mysql -o jsonpath
 
 Then connect to the mysql instance ([kpoof](https://github.com/farmotive/kpoof), [Sequel Pro](www.sequelpro.com), `mysql client`, etc) and import `java-prototype.sql`
 
+If you wish to manually port forward, first, get the pod name with
+
+```bash
+kubectl get pods -n java-prototype
+```
+
+Copy the pod name, and then replace <POD> below with the pod name:
+
+```bash
+kubectl port-forward -n java-prototype <POD> 3306:3306
+```
+
 ```bash
 mysql -u root -p java-prototype < java-prototype.sql
 ```
