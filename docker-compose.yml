@@ -4,7 +4,7 @@ services:
     image: mysql:5.7.21
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_USER: java_prototype
-      MYSQL_PASSWORD: java_prototype
+      MYSQL_USER: java-prototype
+      MYSQL_PASSWORD: java-prototype
     ports:
       - "3306:3306"
