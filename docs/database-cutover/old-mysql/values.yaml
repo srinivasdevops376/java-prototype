@@ -1,5 +1,6 @@
 mysqlRootPassword: not-a-secure-password
-persistence.enabled: true
+persistence:
+  enabled: true
 
 configurationFiles:
   mysql.cnf: |
