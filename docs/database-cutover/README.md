@@ -22,7 +22,7 @@ STATUS: DEPLOYED
 Set some helpful environment variables:
 
 ```console
-$ OLD_PASS=$(kubectl get secret --namespace default old-mysql -o jsonpath="{.data.mysql-root-password}" | base64 --decode; echo) && OLD_POD=$(kc get pod --selector=app=old-mysql -o jsonpath='{.items..metadata.name}')
+$ OLD_PASS=$(kubectl get secret --namespace default old-mysql -o jsonpath="{.data.mysql-root-password}" | base64 --decode; echo) && OLD_POD=$(kubectl get pod --selector=app=old-mysql -o jsonpath='{.items..metadata.name}')
 ```
 
 Deploy the "new" MySQL server that we're migrating to:
@@ -39,7 +39,7 @@ STATUS: DEPLOYED
 Set some helpful environment variables:
 
 ```console
-$ NEW_PASS=$(kubectl get secret --namespace default new-mysql -o jsonpath="{.data.mysql-root-password}" | base64 --decode; echo) && NEW_POD=$(kc get pod --selector=app=new-mysql -o jsonpath='{.items..metadata.name}')
+$ NEW_PASS=$(kubectl get secret --namespace default new-mysql -o jsonpath="{.data.mysql-root-password}" | base64 --decode; echo) && NEW_POD=$(kubectl get pod --selector=app=new-mysql -o jsonpath='{.items..metadata.name}')
 ```
 
 
@@ -75,7 +75,7 @@ Next we need to backup and restore the master database to the slave:
 > Note: the backup command is a bit complicated, so we're going to `kubectl exec` into a bash prompt, run commands, then exit.
 
 ```console
-$ kc exec -ti ${NEW_POD} -- bash
+$ kubectl exec -ti ${NEW_POD} -- bash
 
 pod$ mysqldump -pnot-a-secure-password -h old-mysql --skip-lock-tables --single-transaction --flush-logs --hex-blob --master-data=2 -A | tee /tmp/dump.sql | mysql -pnot-a-secure-password
 
