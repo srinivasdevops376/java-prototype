@@ -3,13 +3,19 @@ debug: true
 
 spring:
   datasource:
-    url: ${JAVAPROTOTYPE_MYSQL_CONNECTION_STRING:jdbc:mysql://localhost:3306/java_prototype}
+    url: ${JAVAPROTOTYPE_MYSQL_CONNECTION_STRING:jdbc:mysql://localhost:3306/java-prototype}
     driver-class-name: com.mysql.jdbc.Driver
-    username: ${JAVAPROTOTYPE_MYSQL_CONNECTION_USER:java_prototype}
-    password: ${JAVAPROTOTYPE_MYSQL_CONNECTION_PASS:java_prototype}
+    username: ${JAVAPROTOTYPE_MYSQL_CONNECTION_USER:java-prototype}
+    password: ${JAVAPROTOTYPE_MYSQL_CONNECTION_PASS:java-prototype}
+
+  jackson.serialization.WRITE_DATES_AS_TIMESTAMPS: false
+
+management:
+  security.enabled: false # allows unauthenticated access to the spring-boot-actuator endpoints
+  info.git.mode: full # (simple | full) -- controls how much of the git.properties information is returned in the /info endpoint
 
 flyway:
   url: jdbc:mysql://localhost:3306
-  schemas: java_prototype
+  schemas: java-prototype
   placeholders:
     application_username: ${spring.datasource.username}

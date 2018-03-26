@@ -5,14 +5,18 @@
 replicaCount: 1
 
 image:
-  repository: gcr.io/farmotive-io/java-prototype #Replace `farmotive-io` with your $PROJECT_ID
-  tag: latest
-  pullPolicy: Always
+  repository: billkoch/heptio-java-prototype
+  tag: issue-34
+  pullPolicy: IfNotPresent
 
 env:
   conn: "jdbc:mysql://java-prototype-mysql-mysql:3306/java-prototype"
   user: "java-prototype"
   pass: "heptio"
+  flyway:
+    conn: "jdbc:mysql://java-prototype-mysql-mysql:3306"
+    user: root # replace with user that has elevated privileges (grant,create,drop,etc.)
+    pass: root
   javaopts: "-Xmx2048m"
 
 localDevEnvironment: false # Change to true if deploy locally
