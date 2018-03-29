@@ -9,17 +9,17 @@ image:
   tag: issue-34
   pullPolicy: IfNotPresent
 
-env:
-  conn: "jdbc:mysql://java-prototype-mysql-mysql:3306/java-prototype"
-  user: "java-prototype"
-  pass: "heptio"
-  flyway:
-    conn: "jdbc:mysql://java-prototype-mysql-mysql:3306"
-    user: root # replace with user that has elevated privileges (grant,create,drop,etc.)
-    pass: root
-  javaopts: "-Xmx2048m"
+## These are ignored when `mysql.enabled` is set to true.
+mysqlHost: java-prototype-mysql-mysql
+mysqlUser: "root"
+mysqlPassword:
+mysqlDatabase: java-prototype
+mysqlPort: "3306"
+flywayUrl: "jdbc:mysql://java-prototype-mysql-mysql:3306"
+flywayUser: "root"
+flywayPass:
 
-localDevEnvironment: false # Change to true if deploy locally
+javaopts: "-Xmx2048m"
 
 service:
   type: NodePort
@@ -55,3 +55,12 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+mysql:
+  enabled: true
+  persistence:
+    enabled: false
+  mysqlUser: java-prototype
+  mysqlDatabase: java-prototype
+# leave blank to autogenerate a password
+  mysqlPassword: not-a-secure-password

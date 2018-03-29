@@ -23,23 +23,21 @@ spec:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          envFrom:
+          - configMapRef:
+              name: {{ template "java-prototype.fullname" . }}
+          - secretRef:
+              name: {{ template "java-prototype.fullname" . }}
           env:
-            - name: FLYWAY_URL
-              value: {{ .Values.env.flyway.conn}}
-            - name: FLYWAY_USER
-              value: {{ .Values.env.flyway.user}}
+{{ if .Values.mysql.enabled }}
             - name: FLYWAY_PASSWORD
-              value: {{ .Values.env.flyway.pass}}
-            - name: JAVAPROTOTYPE_MYSQL_CONNECTION_STRING
-              value: {{  .Values.env.conn }}
-            - name: JAVAPROTOTYPE_MYSQL_CONNECTION_STRING
-              value: {{ .Values.env.conn }}
-            - name: JAVAPROTOTYPE_MYSQL_CONNECTION_USER
-              value: {{ .Values.env.user }}
-            - name: JAVAPROTOTYPE_MYSQL_CONNECTION_PASS
-              value: {{ .Values.env.pass }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name}}-mysql
+                  key: mysql-root-password
+{{ end }}
             - name: JAVA_OPTS
-              value: {{ .Values.env.javaopts }}
+              value: {{ .Values.javaopts }}
           ports:
             - name: http
               containerPort: 8080

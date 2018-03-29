@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "{{ template "java-prototype.fullname" . }}"
+  labels:
+    app: {{ template "java-prototype.name" . }}
+    chart: {{ template "java-prototype.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+data:
+{{ if .Values.mysql.enabled }}
+  JAVAPROTOTYPE_MYSQL_CONNECTION_STRING: "jdbc:mysql://{{ .Release.Name}}-mysql:3306/{{ .Values.mysql.mysqlDatabase }}"
+  JAVAPROTOTYPE_MYSQL_CONNECTION_USER: {{ .Values.mysql.mysqlUser }}
+  JAVAPROTOTYPE_MYSQL_CONNECTION_PASS: {{ .Values.mysql.mysqlPassword | quote }}
+  FLYWAY_URL: "jdbc:mysql://{{ .Release.Name }}-mysql:3306"
+  FLYWAY_USER: root
+{{ else }}
+  JAVAPROTOTYPE_MYSQL_CONNECTION_STRING: "jdbc:mysql://{{ .Values.mysqlHost }}:{{ .Values.mysqlPort }}/{{ .Values.mysqlDatabase}}"
+  JAVAPROTOTYPE_MYSQL_CONNECTION_USER: {{ .Values.mysqlUser }}
+  JAVAPROTOTYPE_MYSQL_CONNECTION_PASS: {{ .Values.mysqlPassword | quote }}
+  FLYWAY_URL: "jdbc:mysql://{{ .Values.mysqlHost }}:{{ .Values.mysqlPort }}"
+  FLYWAY_USER: {{ .Values.flywayUser }}
+{{ end }}
