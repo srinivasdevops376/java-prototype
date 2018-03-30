@@ -23,17 +23,96 @@ Also for a quick development run the following command to build and run the appl
 make dev
 ```
 
-# Configuring
+# Minikube Deployment
 
-### MySQL
+### Prerequisites
 
-There are three environmental variables that need to be defined in order to authenticate with a MySQL server.
+* [minikube](https://github.com/kubernetes/minikube/releases)
+* [helm](https://github.com/kubernetes/helm/releases)
+* [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/#install-kubectl-binary-via-curl)
 
-```bash
-export JAVAPROTOTYPE_MYSQL_CONNECTION_STRING="jdbc:mysql://my.server.url/database"
-export JAVAPROTOTYPE_MYSQL_CONNECTION_USER="user"
-export JAVAPROTOTYPE_MYSQL_CONNECTION_PASS="password"
+### Prepare Environment
+
+Start minikube and install helm:
+
+```console
+$ minikube start --memory 3064
+Starting local Kubernetes v1.9.4 cluster...
+Starting VM...
+...
+
+$ helm init
+$HELM_HOME has been configured at /home/pczarkowski/.helm.
+Tiller (the Helm server-side component) has been installed into your Kubernetes Cluster.
+Happy Helming!
+
+$ helm version
+Client: &version.Version{SemVer:"v2.8.1", GitCommit:"6af75a8fd72e2aa18a2b278cfe5c7a1c5feca7f2", GitTreeState:"clean"}
+Server: &version.Version{SemVer:"v2.8.1", GitCommit:"6af75a8fd72e2aa18a2b278cfe5c7a1c5feca7f2", GitTreeState:"clean"}
 ```
+
+### Install
+
+Download chart dependencies and install java-prototype:
+
+```console
+$ helm dependency update
+Hang tight while we grab the latest from your chart repositories...
+...
+Downloading mysql from repo https://kubernetes-charts.storage.googleapis.com
+
+$ helm install --namespace prototype -n demo .
+NAME:   demo
+LAST DEPLOYED: Thu Mar 29 15:46:30 2018
+NAMESPACE: prototype
+...
+...
+NOTES:
+1. Get the application URL by running these commands:
+  export NODE_PORT=$(kubectl get --namespace prototype -o jsonpath="{.spec.ports[0].nodePort}" services demo-java-prototype)
+  export NODE_IP=$(kubectl get nodes --namespace prototype -o jsonpath="{.items[0].status.addresses[0].address}")
+  echo http://$NODE_IP:$NODE_PORT
+```
+
+After a few minutes there should be two pods that show as READY:
+
+```console
+$ kubectl -n prototype get pods
+NAME                                   READY     STATUS    RESTARTS   AGE
+demo-java-prototype-79c9969867-xpcw2   1/1       Running   1          1m
+demo-mysql-865b44b449-9rtpq            1/1       Running   0          1m
+```
+
+### Test
+
+Verify the application is responding:
+
+```console
+$ curl $(minikube service demo-java-prototype --url -n prototype)
+Success!
+$ curl $(minikube service demo-java-prototype --url -n prototype)/health
+{"status":"UP","diskSpace":{"status":"UP","total":17293533184,"free":15394152448,"threshold":10485760},"db":{"status":"UP","database":"MySQL","hello":1}}
+```
+
+### Cleanup
+
+Delete the helm deployment:
+
+```console
+$ helm delete --purge demo
+release "demo" deleted
+```
+
+Destroy minikube:
+
+```console
+$ minikube delete
+Deleting local Kubernetes cluster...
+Machine deleted.
+```
+
+
+
 
 # Cloud Deployment
 1. GCP: Create a build trigger using `cloudbuild.yaml` linking your clone or fork of this repo.
@@ -49,6 +128,16 @@ brew tap farmotive/k8s
 brew install kpoof klog kex kud
 ```
 
+### Configuring
+
+There are three environmental variables that need to be defined in order to authenticate with a MySQL server.
+
+```bash
+export JAVAPROTOTYPE_MYSQL_CONNECTION_STRING="jdbc:mysql://my.server.url/database"
+export JAVAPROTOTYPE_MYSQL_CONNECTION_USER="user"
+export JAVAPROTOTYPE_MYSQL_CONNECTION_PASS="password"
+```
+
 ### Deployment One: the mysql database container
 Set environment variables in order to install the mysql chart using helm:
 ```bash
@@ -62,8 +151,8 @@ export SIZE=1Gi #If cost is not a concern, increase this to a desired capacity, 
 Install the backend deployment:
 
 ```bash
-kubectl create namespace java-prototype
-kubens java-prototype
+kubectl create namespace $NAMESPACE
+kubens $NAMESPACE
 helm install --namespace $NAMESPACE \
 --name=$DEPLOY_NAME \
 --set mysqlUser=$JAVAPROTOTYPE_MYSQL_CONNECTION_USER,mysqlPassword=$JAVAPROTOTYPE_MYSQL_CONNECTION_PASS,mysqlDatabase=java-prototype,persistence.size=$SIZE \
@@ -72,7 +161,8 @@ stable/mysql
 
 Once the deployment is successful, obtain the randomly generated root password from the secret for MYSQL_ROOT_PASSWORD:
 ```bash
-kubectl get secret --namespace $NAMESPACE java-prototype-mysql-mysql -o jsonpath="{.data.mysql-root-password}" | base64 --decode; echo
+export MYSQL_PASS=$(kubectl get secret --namespace $NAMESPACE java-prototype-mysql-mysql -o jsonpath="{.data.mysql-root-password}" | base64 --decode; echo)
+echo $MYSQL_PASS
 ```
 
 Then connect to the mysql instance ([kpoof](https://github.com/farmotive/kpoof), [Sequel Pro](www.sequelpro.com), `mysql client`, etc) and import `java-prototype.sql`
@@ -90,7 +180,7 @@ kubectl port-forward -n java-prototype <POD> 3306:3306
 ```
 
 ```bash
-mysql -u root -p java-prototype < java-prototype.sql
+mysql -u root -p$MYSQL_PASS -h 127.0.0.1 java-prototype < java-prototype.sql
 ```
 When prompted, use the password echoed above.
 
@@ -100,7 +190,8 @@ Modify the image name in `java-prototype/values.yaml image.name` to match the im
 Modify the password in `java-prototype/values.yaml env.pass` to match the `JAVAPROTOTYPE_MYSQL_CONNECTION_PASS` export (if `JAVAPROTOTYPE_MYSQL_CONNECTION_PASS` was altered).
 
 ```bash
-helm install java-prototype/ --namespace java-prototype --name java
+helm install helm/java-prototype/ --namespace java-prototype --name java \
+  --set mysql.enabled=false,flywayPass=NWWXmQAHVb,mysqlPassword=NWWXmQAHVb
 ```
 
 Once the output of the `NOTES.txt` displays, run `kubectl get pods -w` to see the java deployment succeed.  Use `ctrl-C` to regain a prompt.
@@ -133,9 +224,6 @@ klog -f
 ```
 Select the java pod.  It is likely that the application will log `outOfMemory` errors.  Additionally, logs will contain the writes to the database as well as free memory (if any).
 1. Review each terminal window.  The terminal for logs will update with a crash or a new write statement with a random hash.  For each successful `curl`, the terminal for port-forwarding the app will show a valid connection to 8080.  The database manager, when refreshed, will show database rows for each successful connection.
-
-### Challenge Round
-Uncomment the liveness and readiness probes in `java-prototype/templates/deployment.yaml` and modify the values, iterating through upgrades of the java app deployment until the pod shows `ready`.
 
 ### Cleanup
 ```bash
