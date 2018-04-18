@@ -1,12 +1,12 @@
-server.port: ${port:8080}
+server.port: 8080
 debug: true
 
 spring:
   datasource:
-    url: ${JAVAPROTOTYPE_MYSQL_CONNECTION_STRING:jdbc:mysql://localhost:3306/java-prototype}
+    url: jdbc:mysql://35.231.58.155:3306/java_prototype_db
     driver-class-name: com.mysql.jdbc.Driver
-    username: ${JAVAPROTOTYPE_MYSQL_CONNECTION_USER:java-prototype}
-    password: ${JAVAPROTOTYPE_MYSQL_CONNECTION_PASS:java-prototype}
+    username: root
+    password: root123
 
   jackson.serialization.WRITE_DATES_AS_TIMESTAMPS: false
 
@@ -15,7 +15,7 @@ management:
   info.git.mode: full # (simple | full) -- controls how much of the git.properties information is returned in the /info endpoint
 
 flyway:
-  url: jdbc:mysql://localhost:3306
-  schemas: java-prototype
+  url: jdbc:mysql://35.231.58.155:3306
+  schemas: java_prototype_db
   placeholders:
     application_username: ${spring.datasource.username}
